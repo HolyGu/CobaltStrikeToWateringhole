@@ -13,3 +13,5 @@
 修改代码WebHook.cna第27行的URL为自己接口的地址
 
 修改代码WebHook.php第39行的数据库账号密码
+
+将index.php中的内容插入目标网站
